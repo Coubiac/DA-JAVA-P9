@@ -24,6 +24,7 @@ public class EcritureComptable {
     /** Journal comptable */
     @NotNull private JournalComptable journal;
     /** The Reference. */
+    //** @FIX REGEX **/
     @Pattern(regexp = "^.{1,5}-\\d{4}/\\d{5}")
     private String reference;
     /** The Date. */
@@ -99,7 +100,7 @@ public class EcritureComptable {
     public BigDecimal getTotalCredit() {
         BigDecimal vRetour = BigDecimal.ZERO;
         for (LigneEcritureComptable vLigneEcritureComptable : listLigneEcriture) {
-            if (vLigneEcritureComptable.getCredit() != null) {
+            if (vLigneEcritureComptable.getCredit() != null) { // @FIX mauvais appel de méthode
                 vRetour = vRetour.add(vLigneEcritureComptable.getCredit());
             }
         }
@@ -111,8 +112,8 @@ public class EcritureComptable {
      * @return boolean
      */
     public boolean isEquilibree() {
-        boolean vRetour = this.getTotalDebit().equals(getTotalCredit());
-        return vRetour;
+        int vRetour = this.getTotalDebit().compareTo(getTotalCredit()); // @FIX compareTo for BigDecimal
+        return vRetour == 0;
     }
 
     // ==================== Méthodes ====================

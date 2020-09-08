@@ -54,10 +54,10 @@ public class EcritureComptableTest {
     }
 
     @Test
-    public void When__DebitEqualsCredit_isEquilibree__ShouldReturnTrue() {
+    public void testWhen__DebitEqualsCredit_isEquilibree__ShouldReturnTrue() {
         classUnderTest = spy(classUnderTest);
-        doReturn(new BigDecimal(100)).when(classUnderTest).getTotalCredit();
-        doReturn(new BigDecimal(100)).when(classUnderTest).getTotalDebit();
+        doReturn(new BigDecimal("100.0")).when(classUnderTest).getTotalCredit();
+        doReturn(new BigDecimal("100.00")).when(classUnderTest).getTotalDebit();
         assertThat(classUnderTest.isEquilibree()).isTrue();
 
     }
@@ -66,8 +66,8 @@ public class EcritureComptableTest {
     @Test
     public void When__DebitNotEqualsCredit_isEquilibree__ShouldReturnFalse() {
         classUnderTest = spy(classUnderTest);
-        doReturn(new BigDecimal(100)).when(classUnderTest).getTotalCredit();
-        doReturn(new BigDecimal(50)).when(classUnderTest).getTotalDebit();
+        doReturn(new BigDecimal("100")).when(classUnderTest).getTotalCredit();
+        doReturn(new BigDecimal("50.0")).when(classUnderTest).getTotalDebit();
         assertThat(classUnderTest.isEquilibree()).isFalse();
 
     }
