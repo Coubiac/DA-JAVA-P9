@@ -24,8 +24,9 @@ public class EcritureComptable {
     /** Journal comptable */
     @NotNull private JournalComptable journal;
     /** The Reference. */
-    //** @FIX REGEX **/
+    //** @FIX REGEX and Add NotNull**/
     @Pattern(regexp = "^.{1,5}-\\d{4}/\\d{5}")
+    @NotNull
     private String reference;
     /** The Date. */
     @NotNull private Date date;
