@@ -70,7 +70,6 @@ public class ComptabiliteManagerImplIntegrationTest extends BusinessTestCase {
         assertThat(ecritureComptables).extracting("reference")
                 .contains("AC-2016/00001",
                         "VE-2016/00002",
-                        //"BQ-2016/00003",
                         "VE-2016/00004",
                         "BQ-2016/00005");
 
