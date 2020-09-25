@@ -9,9 +9,7 @@ import com.dummy.myerp.technical.exception.FunctionalException;
 
 import com.dummy.myerp.technical.exception.NotFoundException;
 import org.apache.commons.lang3.ObjectUtils;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -44,18 +42,19 @@ public class ComptabiliteManagerImplIntegrationTest extends BusinessTestCase {
 
     @BeforeEach
     public void init() throws ParseException {
+        List<CompteComptable> compteComptables = manager.getListCompteComptable();
         vEcritureComptable = new EcritureComptable();
         vEcritureComptable.setId(1);
         vEcritureComptable.setJournal(new JournalComptable("AC", "Achat"));
         vEcritureComptable.setDate(new SimpleDateFormat( "dd/MM/yyyy" ).parse( "09/09/2020" ));
-        vEcritureComptable.setLibelle("Libelle");
+        vEcritureComptable.setLibelle("TestLibelle");
         vEcritureComptable.setReference("AC-2020/00001");
         vEcritureComptable.getListLigneEcriture()
-                .add(new LigneEcritureComptable(new CompteComptable(1),
+                .add(new LigneEcritureComptable(compteComptables.get(0),
                         null, new BigDecimal(123),
                         null));
         vEcritureComptable.getListLigneEcriture()
-                .add(new LigneEcritureComptable(new CompteComptable(2),
+                .add(new LigneEcritureComptable(compteComptables.get(1),
                         null, null,
                         new BigDecimal(123)));
     }
@@ -71,7 +70,7 @@ public class ComptabiliteManagerImplIntegrationTest extends BusinessTestCase {
         assertThat(ecritureComptables).extracting("reference")
                 .contains("AC-2016/00001",
                         "VE-2016/00002",
-                        "BQ-2016/00003",
+                        //"BQ-2016/00003",
                         "VE-2016/00004",
                         "BQ-2016/00005");
 
@@ -110,6 +109,40 @@ public class ComptabiliteManagerImplIntegrationTest extends BusinessTestCase {
 
 
     }
+
+    @Test
+    public void checkInsertEcritureComptableTest() throws FunctionalException {
+        manager.insertEcritureComptable(vEcritureComptable);
+        List<EcritureComptable> ecritureComptables = manager.getListEcritureComptable();
+        assertThat(ecritureComptables).extracting("libelle")
+                .contains("TestLibelle");
+
+    }
+
+    @Test
+    public void checkUpdateEcritureComptableTest() throws FunctionalException, NotFoundException {
+        vEcritureComptable.setLibelle("TestLibelleNew");
+        manager.addReference(vEcritureComptable);
+        manager.updateEcritureComptable(vEcritureComptable);
+        List<EcritureComptable> ecritureComptables = manager.getListEcritureComptable();
+        assertThat(ecritureComptables).extracting("libelle")
+                .contains("TestLibelleNew");
+        assertThat(ecritureComptables).extracting("reference")
+                .contains("AC-2020/00002");
+
+    }
+
+    @Test
+    public void checkDeleteEcritureComptableTest() {
+        manager.deleteEcritureComptable(-3);
+        List<EcritureComptable> ecritureComptables = manager.getListEcritureComptable();
+        assertThat(ecritureComptables).extracting("libelle")
+                .doesNotContain("Paiement Facture F110001");
+    }
+
+
+
+
 
 
 
