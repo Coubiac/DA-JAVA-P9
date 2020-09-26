@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class ComptabiliteManagerImplIntegrationTest extends BusinessTestCase {
@@ -62,6 +63,40 @@ public class ComptabiliteManagerImplIntegrationTest extends BusinessTestCase {
     @Test
     public void checkEcritureComptableTest() throws FunctionalException {
         manager.checkEcritureComptable(vEcritureComptable);
+
+    }
+
+    @Test
+    public void checkEcritureComptableExceptionTest() throws ParseException {
+        List<CompteComptable> compteComptables = manager.getListCompteComptable();
+        vEcritureComptable = new EcritureComptable();
+        vEcritureComptable.setId(1);
+        vEcritureComptable.setJournal(new JournalComptable("BQ", "Banque"));
+        vEcritureComptable.setDate(new SimpleDateFormat( "dd/MM/yyyy" ).parse( "27/12/2016" ));
+        vEcritureComptable.setLibelle("TestLibelle");
+        vEcritureComptable.setReference("BQ-2016/00005");
+        vEcritureComptable.getListLigneEcriture()
+                .add(new LigneEcritureComptable(compteComptables.get(0),
+                        null, new BigDecimal(123),
+                        null));
+        vEcritureComptable.getListLigneEcriture()
+                .add(new LigneEcritureComptable(compteComptables.get(1),
+                        null, null,
+                        new BigDecimal(123)));
+
+        Throwable theException = assertThrows(FunctionalException.class, () ->
+                manager.checkEcritureComptable(vEcritureComptable));
+
+        vEcritureComptable.setId(null);
+        Throwable theSecondException = assertThrows(FunctionalException.class, () ->
+                manager.checkEcritureComptable(vEcritureComptable));
+
+        assertThat(theException.getMessage())
+               .isEqualTo("Une autre écriture comptable existe déjà avec la même référence.");
+        assertThat(theSecondException.getMessage())
+                .isEqualTo("Une autre écriture comptable existe déjà avec la même référence.");
+
+
     }
 
     @Test
