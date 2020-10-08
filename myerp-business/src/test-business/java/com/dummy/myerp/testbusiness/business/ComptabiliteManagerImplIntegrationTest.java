@@ -137,7 +137,6 @@ public class ComptabiliteManagerImplIntegrationTest extends BusinessTestCase {
 
     @Test
     public void checkAddReferenceTest() throws NotFoundException {
-        vEcritureComptable.setReference(null); // On supprime la référence avant de tester l'ajout
         manager.addReference(vEcritureComptable);
 
         assertThat(vEcritureComptable.getReference()).isEqualTo("AC-2020/00001");
